@@ -10,6 +10,6 @@ spring:
       ddl-auto: create
     properties:
       hibernate:
-        format_sql: true
+        format_sql: true #log? sql? ? ?? ?? ????? ??? ???? ??
 logging.level:
     org.hibernate.sql: debug
