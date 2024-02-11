@@ -59,8 +59,6 @@ class MemberJPARepositoryTest {
 
         long deleteCount  = memberJPARepository.count();
         assertThat(deleteCount  ).isEqualTo(0 );
-
-
     }
     
 }
