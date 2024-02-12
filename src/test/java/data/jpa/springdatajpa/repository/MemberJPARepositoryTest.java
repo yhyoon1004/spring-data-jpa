@@ -54,11 +54,26 @@ class MemberJPARepositoryTest {
         long count = memberJPARepository.count();
         assertThat(count).isEqualTo(2);
 
+        //삭제 검증
         memberJPARepository.delete(member1);
         memberJPARepository.delete(member2);
 
         long deleteCount  = memberJPARepository.count();
         assertThat(deleteCount  ).isEqualTo(0 );
     }
-    
+
+    @Test
+    public void findByUsernameAndGreaterThan() {
+        Member memberA = new Member("memberA",10);
+        Member memberB = new Member("memberA",20);
+        memberJPARepository.save(memberA);
+        memberJPARepository.save(memberB);
+
+        List<Member> result = memberJPARepository.findByUsernameAndAgeGreaterThan("memberA", 15);
+
+        assertThat(result.get(0).getUsername()).isEqualTo("memberA");
+        assertThat(result.get(0).getAge()).isEqualTo(20);
+        assertThat(result.size()).isEqualTo(1);
+    }
+
 }
