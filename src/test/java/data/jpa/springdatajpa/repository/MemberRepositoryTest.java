@@ -20,7 +20,7 @@ class MemberRepositoryTest {
     MemberRepository memberRepository;
 
     @Test
-    public void testMember () throws Exception{
+    public void testMember() throws Exception {
         Member member = new Member("memberA");
         Member saveMember = memberRepository.save(member);
 
@@ -30,8 +30,9 @@ class MemberRepositoryTest {
         assertThat(findMember.getUsername()).isEqualTo(member.getUsername());
         assertThat(findMember).isEqualTo(member);
     }
+
     @Test
-    public void basicTest () throws Exception{
+    public void basicTest() throws Exception {
 
         Member member1 = new Member("member1");
         Member member2 = new Member("member2");
@@ -39,7 +40,7 @@ class MemberRepositoryTest {
         memberRepository.save(member2);
 
         //단건 조회 검증
-        Member  findMember1 = memberRepository.findById(member1.getId()).get();
+        Member findMember1 = memberRepository.findById(member1.getId()).get();
         Member findMember2 = memberRepository.findById(member2.getId()).get();
 
         assertThat(findMember1).isEqualTo(member1);
@@ -56,14 +57,14 @@ class MemberRepositoryTest {
         memberRepository.delete(member1);
         memberRepository.delete(member2);
 
-        long deleteCount  = memberRepository.count();
-        assertThat(deleteCount  ).isEqualTo(0 );
+        long deleteCount = memberRepository.count();
+        assertThat(deleteCount).isEqualTo(0);
     }
 
     @Test
     public void findByUsernameAndGreaterThan() {
-        Member memberA = new Member("memberA",10);
-        Member memberB = new Member("memberA",20);
+        Member memberA = new Member("memberA", 10);
+        Member memberB = new Member("memberA", 20);
         memberRepository.save(memberA);
         memberRepository.save(memberB);
 
@@ -78,5 +79,18 @@ class MemberRepositoryTest {
     public void testDataJPA() {
         List<Member> top3ByMember = memberRepository.findTop3HelloBy();
     }
+
+    @Test
+    public void namedQuery() {
+        Member memberA = new Member("memberA", 10);
+        Member memberB = new Member("memberA", 20);
+        memberRepository.save(memberA);
+        memberRepository.save(memberB);
+
+        List<Member> result = memberRepository.findByUsername("memberA");
+        Member findMember = result.get(0);
+        assertThat(findMember).isEqualTo(memberA);
+    }
+
 
 }

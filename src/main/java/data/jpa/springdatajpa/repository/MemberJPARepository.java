@@ -48,4 +48,13 @@ public class MemberJPARepository {
                 .setParameter("age", age)
                 .getResultList();
     }
+
+
+    //초기 NamedQuery 를 만드는 법
+    public List<Member> findByUsername(String username) {
+        return em.createNamedQuery("Member.findByUsername", Member.class)
+                .setParameter("username",username)
+                .getResultList() ;
+    }
+
 }

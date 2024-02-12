@@ -7,6 +7,12 @@ import lombok.*;
 @Getter@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)//protected 수준의 생성자를 만들어주는 어노테이션
 @ToString(of = {"id", "username", "age"}) //객체를 출력할 때 사용하는 어노테이션
+
+@NamedQuery(
+        name = "Member.findByUsername",
+        query = "select m from Member m where m.username = :username"
+)
+
 public class Member {
 
     @Id
