@@ -87,9 +87,14 @@ class MemberRepositoryTest {
         memberRepository.save(memberA);
         memberRepository.save(memberB);
 
-        List<Member> result = memberRepository.findByUsername("memberA");
-        Member findMember = result.get(0);
-        assertThat(findMember).isEqualTo(memberA);
+//        List<Member> result = memberRepository.findByUsername("memberA");
+//        Member findMember = result.get(0);
+//        assertThat(findMember).isEqualTo(memberA);
+
+        List<Member> result = memberRepository.findQueryCustom("memberA", 15);
+        assertThat(result.get(0)).isEqualTo(memberB);
+
+
     }
 
 
