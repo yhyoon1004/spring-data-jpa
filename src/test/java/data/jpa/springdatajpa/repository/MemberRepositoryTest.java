@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
@@ -122,5 +123,17 @@ class MemberRepositoryTest {
 
     }
 
+    @Test
+    public void paramTest() {
+        Member memberA = new Member("memberA", 10);
+        Member memberB = new Member("memberB", 20);
+        memberRepository.save(memberA);
+        memberRepository.save(memberB);
 
+        List<Member> result = memberRepository.collectionParam(Arrays.asList("memberA", "memberB"));
+        for (Member value : result) {
+            System.out.println("value = " + value);
+        }
+
+    }
 }

@@ -29,4 +29,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     @Query("select new data.jpa.springdatajpa.dto.MemberDTO( m.id, m.username, t.name) from Member m join m.team t")
     List<MemberDTO> findDTOData();
+
+    @Query("select m from Member m where m.username in :names")
+    List<Member> collectionParam(@Param("names") List<String> names);
 }
