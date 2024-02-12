@@ -1,6 +1,8 @@
 package data.jpa.springdatajpa.repository;
 
+import data.jpa.springdatajpa.dto.MemberDTO;
 import data.jpa.springdatajpa.entity.Member;
+import data.jpa.springdatajpa.entity.Team;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,6 +20,8 @@ import static org.assertj.core.api.Assertions.*;
 class MemberRepositoryTest {
     @Autowired
     MemberRepository memberRepository;
+    @Autowired
+    TeamRepository teamRepository;
 
     @Test
     public void testMember() throws Exception {
@@ -83,17 +87,38 @@ class MemberRepositoryTest {
     @Test
     public void namedQuery() {
         Member memberA = new Member("memberA", 10);
-        Member memberB = new Member("memberA", 20);
+        Member memberB = new Member("memberB", 20);
         memberRepository.save(memberA);
         memberRepository.save(memberB);
 
+//        초기 네임드쿼리
 //        List<Member> result = memberRepository.findByUsername("memberA");
 //        Member findMember = result.get(0);
 //        assertThat(findMember).isEqualTo(memberA);
 
-        List<Member> result = memberRepository.findQueryCustom("memberA", 15);
-        assertThat(result.get(0)).isEqualTo(memberB);
+//        jpa 인터페이스에 정의한 네임드쿼리
+//        List<Member> result = memberRepository.findQueryCustom("memberA", 15);
+//        assertThat(result.get(0)).isEqualTo(memberB);
 
+        List<String> usernameList = memberRepository.getUsernameList();
+        for (String value : usernameList) {
+            System.out.println("value = " + value);
+        }
+    }
+
+    @Test
+    public void testNamedQueryDTO() {
+        Member member = new Member("AAA", 10);
+        memberRepository.save(member);
+
+        Team team = new Team("TeamAAA");
+        teamRepository.save(team);
+        member.setTeam(team);
+
+        List<MemberDTO> dtoData = memberRepository.findDTOData();
+        for (MemberDTO value : dtoData) {
+            System.out.println("value = " + value);
+        }
 
     }
 
