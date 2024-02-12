@@ -7,7 +7,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Long> {
@@ -31,5 +33,12 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     List<MemberDTO> findDTOData();
 
     @Query("select m from Member m where m.username in :names")
-    List<Member> collectionParam(@Param("names") List<String> names);
+    List<Member> collectionParam(@Param("names") Collection<String> names);
+
+    List<Member> findListByUsername(String username);   //컬렉션
+                                                        // || Collection 은 절대 null 을 반환하지 않음, 값이 없으면 빈 객체를 반환 ,‼️null 처리 x
+    Member findMemberByUsername(String username);   //단건 조회
+                                                    // || 객체를 반환하는 메서드의 경우 null을 반환
+    Optional<Member> findOptionalByUsername(String username);   //단건 조회 Optional
+
 }
