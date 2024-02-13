@@ -35,7 +35,6 @@ public class TeamJPARepository {
         return em.createQuery("select count(t) from Team t", Long.class).getSingleResult() ;
     }
 
-
     //JPA는 업데이트 메서드가 필요없다, why? JPA는 변경감지 기능이 있어서 영속상태의 엔티티가 변경이 되면 자동으로 업데이트 쿼리를 보냄
 
 }

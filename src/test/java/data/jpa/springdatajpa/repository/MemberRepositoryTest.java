@@ -6,6 +6,10 @@ import data.jpa.springdatajpa.entity.Team;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -156,6 +160,47 @@ class MemberRepositoryTest {
         Member getMember = mo1.get();
         System.out.println("Optional Member = " + getMember);
 
+    }
+
+
+    @Test
+    public void pagingTest() {
+        memberRepository.save(new Member("m1", 10));
+        memberRepository.save(new Member("m2", 10));
+        memberRepository.save(new Member("m3", 10));
+        memberRepository.save(new Member("m4", 10));
+        memberRepository.save(new Member("m5", 10));
+
+        PageRequest pageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "username"));
+
+        Page<Member> page = memberRepository.findByAge(10, pageRequest);
+
+        //Page 인터페이스의 map 함수로 엔티티 DTO 변환가능
+        Page<MemberDTO> dtos = page.map(member -> new MemberDTO(member.getId(), member.getUsername(), null));
+
+        List<Member> content = page.getContent();
+        long totalElements = page.getTotalElements();
+        int totalPages = page.getTotalPages();
+
+        System.out.println("content = " + content);
+        System.out.println("totalElements = " + totalElements);
+        System.out.println("totalPages = " + totalPages);
+
+        assertThat(content.size()).isEqualTo(3);
+        assertThat(page.getTotalElements()).isEqualTo(5);
+        assertThat(page.getNumber()).isEqualTo(0);//현재 페이지가 0번 페이지 인지
+        assertThat(page.getTotalPages()).isEqualTo(2);
+        assertThat(page.isFirst()).isTrue();
+        assertThat(page.hasNext()).isTrue() ;
+
+        /*_____*/
+        Slice <Member> byAge = memberRepository.findSliceByAge(10, pageRequest);
+        assertThat(content.size()).isEqualTo(3);
+//        assertThat(byAge.getTotalElements()).isEqualTo(5); slice에는 존재하지 않음
+        assertThat(byAge.getNumber()).isEqualTo(0);//현재 페이지가 0번 페이지 인지
+//        assertThat(byAge.getTotalPages()).isEqualTo(2);  slice에는 존재하지 않음
+        assertThat(byAge.isFirst()).isTrue();
+        assertThat(byAge.hasNext()).isTrue() ;
     }
 
 }
