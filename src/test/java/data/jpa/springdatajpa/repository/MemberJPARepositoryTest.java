@@ -90,4 +90,32 @@ class MemberJPARepositoryTest {
         assertThat(findMember).isEqualTo(memberA);
     }
 
+
+    @Test
+    public void paging () throws Exception{
+        //given
+        memberJPARepository.save(new Member("m1", 10));
+        memberJPARepository.save(new Member("m2", 10));
+        memberJPARepository.save(new Member("m3", 10));
+        memberJPARepository.save(new Member("m4", 10));
+        memberJPARepository.save(new Member("m5", 10));
+
+        int age = 10;
+        int offset =0;
+        int limit = 3;
+
+        //when
+        List<Member> byPage = memberJPARepository.findByPage(age, offset, limit);
+        long totalCount = memberJPARepository.totalCount(age);
+
+        //페이지 계산공식 적용...
+        //totalPage = totalCount / size ...
+        //마지막 페이지 ...
+        //최초 페이지 ...
+
+        //then
+        assertThat(byPage.size()).isEqualTo(3);
+        assertThat(totalCount).isEqualTo(5); 
+    }
+
 }
