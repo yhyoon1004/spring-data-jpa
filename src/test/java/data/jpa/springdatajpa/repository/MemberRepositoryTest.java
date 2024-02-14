@@ -3,6 +3,8 @@ package data.jpa.springdatajpa.repository;
 import data.jpa.springdatajpa.dto.MemberDTO;
 import data.jpa.springdatajpa.entity.Member;
 import data.jpa.springdatajpa.entity.Team;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -28,6 +30,8 @@ class MemberRepositoryTest {
     MemberRepository memberRepository;
     @Autowired
     TeamRepository teamRepository;
+    @PersistenceContext
+    EntityManager em;           //같은 트렌젝션 안이면 같은 엔티티 매니저를 사용
 
     @Test
     public void testMember() throws Exception {
@@ -201,6 +205,26 @@ class MemberRepositoryTest {
 //        assertThat(byAge.getTotalPages()).isEqualTo(2);  slice에는 존재하지 않음
         assertThat(byAge.isFirst()).isTrue();
         assertThat(byAge.hasNext()).isTrue() ;
+    }
+
+    @Test
+    public void bulkTest() {
+        memberRepository.save(new Member("m1", 10));
+        memberRepository.save(new Member("m2", 19));
+        memberRepository.save(new Member("m3", 20));
+        memberRepository.save(new Member("m4", 21));
+        memberRepository.save(new Member("m5", 40));
+
+        int count = memberRepository.bulkAgePlus(20);
+        em.flush();
+        em.clear();
+
+        List<Member> findMember = memberRepository.findByUsername("m5");
+        Member member = findMember.get(0);
+        System.out.println("member = " + member);
+
+        assertThat(count).isEqualTo(3);
+
     }
 
 }

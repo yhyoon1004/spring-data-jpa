@@ -115,7 +115,21 @@ class MemberJPARepositoryTest {
 
         //then
         assertThat(byPage.size()).isEqualTo(3);
-        assertThat(totalCount).isEqualTo(5); 
+        assertThat(totalCount).isEqualTo(5);
+    }
+
+    @Test
+    public void bulkTest() {
+        memberJPARepository.save(new Member("m1", 10));
+        memberJPARepository.save(new Member("m2", 15));
+        memberJPARepository.save(new Member("m3", 20));
+        memberJPARepository.save(new Member("m4", 45));
+        memberJPARepository.save(new Member("m5", 50));
+        memberJPARepository.save(new Member("m6", 88));
+
+        int count = memberJPARepository.bulkAgePlus(11);
+        assertThat(count).isEqualTo(6);
+
     }
 
 }
