@@ -3,13 +3,12 @@ package data.jpa.springdatajpa.repository;
 import data.jpa.springdatajpa.dto.MemberDTO;
 import data.jpa.springdatajpa.entity.Member;
 import jakarta.persistence.Entity;
+import jakarta.persistence.LockModeType;
+import jakarta.persistence.QueryHint;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.data.jpa.repository.EntityGraph;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -66,8 +65,9 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     List<Member> findMemberFetchJoin();
 
     @Override
-    @EntityGraph(attributePaths = {"team"}) // 해당 데이터를 가져올 때 연관관계인
-                                            // team엔티티 정보도 같이 가져오고 싶으면 EntityGraph 어노테이션을 넣어주면 됨
+    @EntityGraph(attributePaths = {"team"})
+        // 해당 데이터를 가져올 때 연관관계인
+        // team엔티티 정보도 같이 가져오고 싶으면 EntityGraph 어노테이션을 넣어주면 됨
     List<Member> findAll();
 
     @EntityGraph(attributePaths = {"team"}) // jpql도 사용하면서 관련 객체도 받을려면 EntityGraph 어노테이션을 넣어주면 됨
@@ -78,4 +78,15 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 //    @EntityGraph("Member.all") // -> 네임드 엔티티 그래프 호출
     List<Member> findMemberEntityGraphByUsername(@Param("username") String username); //엔티티그래프를 JPA 네이밍 메서드에 사용할 수 도 있음
 
+
+
+    //JPA Hint란 쿼리를 보낼 때 JPA 구현체(Hibernate)에게 설정정보를 알려주는 것
+    //엔티티를 조회해오면 JPA 영속성 컨택스트에 원본객채와 변경감지를 위한 객체 2개를 만드는 데 개발자는 그냥 그런 불필요한 과정없이 해당 객체 데이터만 가지고 오고 싶을 때
+    //아래 쿼리힌트의 값을 readOnly로 아래와 같이 어노테이션으로 넣어 주면 원본 객체만 생성
+    @QueryHints(value = {@QueryHint(name = "org.hibernate.readOnly", value = "true")})
+    Member findReadOnlyValueByUsername(String username);
+
+    //데이터베이스에 쿼리에 트렌젝션 처리시 lock을 거는 것을 이야기하는 것 같음..
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    List<Member> findLockByUsername(String username);
 }
