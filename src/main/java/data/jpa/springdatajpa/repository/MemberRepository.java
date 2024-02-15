@@ -2,9 +2,11 @@ package data.jpa.springdatajpa.repository;
 
 import data.jpa.springdatajpa.dto.MemberDTO;
 import data.jpa.springdatajpa.entity.Member;
+import jakarta.persistence.Entity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -59,4 +61,21 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     @Query("update Member m set m.age = m.age + 1 where m.age >= :age")
     // JPQL 이 사용될 경우 자동적으로 엔티티 flush()를 해버리고 실행됨
     int bulkAgePlus(@Param("age") int age);
+
+    @Query("select m from Member m left join fetch m.team")
+    List<Member> findMemberFetchJoin();
+
+    @Override
+    @EntityGraph(attributePaths = {"team"}) // 해당 데이터를 가져올 때 연관관계인
+                                            // team엔티티 정보도 같이 가져오고 싶으면 EntityGraph 어노테이션을 넣어주면 됨
+    List<Member> findAll();
+
+    @EntityGraph(attributePaths = {"team"}) // jpql도 사용하면서 관련 객체도 받을려면 EntityGraph 어노테이션을 넣어주면 됨
+    @Query("select m from Member m")
+    List<Member> findMemberEntityGraph();
+
+    @EntityGraph(attributePaths = {"team"})
+//    @EntityGraph("Member.all") // -> 네임드 엔티티 그래프 호출
+    List<Member> findMemberEntityGraphByUsername(@Param("username") String username); //엔티티그래프를 JPA 네이밍 메서드에 사용할 수 도 있음
+
 }
