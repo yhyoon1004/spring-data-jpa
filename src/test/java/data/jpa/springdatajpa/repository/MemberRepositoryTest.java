@@ -195,16 +195,16 @@ class MemberRepositoryTest {
         assertThat(page.getNumber()).isEqualTo(0);//현재 페이지가 0번 페이지 인지
         assertThat(page.getTotalPages()).isEqualTo(2);
         assertThat(page.isFirst()).isTrue();
-        assertThat(page.hasNext()).isTrue() ;
+        assertThat(page.hasNext()).isTrue();
 
         /*_____*/
-        Slice <Member> byAge = memberRepository.findSliceByAge(10, pageRequest);
+        Slice<Member> byAge = memberRepository.findSliceByAge(10, pageRequest);
         assertThat(content.size()).isEqualTo(3);
 //        assertThat(byAge.getTotalElements()).isEqualTo(5); slice에는 존재하지 않음
         assertThat(byAge.getNumber()).isEqualTo(0);//현재 페이지가 0번 페이지 인지
 //        assertThat(byAge.getTotalPages()).isEqualTo(2);  slice에는 존재하지 않음
         assertThat(byAge.isFirst()).isTrue();
-        assertThat(byAge.hasNext()).isTrue() ;
+        assertThat(byAge.hasNext()).isTrue();
     }
 
     @Test
@@ -225,8 +225,9 @@ class MemberRepositoryTest {
 
         assertThat(count).isEqualTo(3);
     }
+
     @Test
-    public void findMemberLazy () throws Exception{
+    public void findMemberLazy() throws Exception {
         //given
         Team teamA = new Team("teamA");
         Team teamB = new Team("teamB");
@@ -248,7 +249,7 @@ class MemberRepositoryTest {
     }
 
     @Test
-    public void queryHint () throws Exception{
+    public void queryHint() throws Exception {
         //given
         Member member1 = new Member("member1", 10);
         memberRepository.save(member1);
@@ -261,9 +262,9 @@ class MemberRepositoryTest {
         //then
 //        findLockByUsername
     }
-    
+
     @Test
-    public void lockTest () throws Exception{
+    public void lockTest() throws Exception {
         //given
         Member member1 = new Member("member1", 10);
         memberRepository.save(member1);
@@ -273,6 +274,9 @@ class MemberRepositoryTest {
         List<Member> findMembers = memberRepository.findLockByUsername("member1");
 
     }
-    
 
+    @Test
+    public void callCustom() throws Exception {
+        List<Member> memberCustom = memberRepository.findMemberCustom();
+    }
 }
