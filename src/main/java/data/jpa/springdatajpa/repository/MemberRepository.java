@@ -89,4 +89,14 @@ public interface MemberRepository extends JpaRepository<Member, Long>, MemberRep
     //데이터베이스에 쿼리에 트렌젝션 처리시 lock을 거는 것을 이야기하는 것 같음..
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     List<Member> findLockByUsername(String username);
+
+    @Query(value = "select * from member where username=?", nativeQuery = true)
+    Member findByNativeQuery(String username);
+
+
+    @Query(value = "select m.member_id as id, m.username, t.name as teamName " +
+            "from member m left join team t",
+            countQuery = "select count(*) from member",
+            nativeQuery = true)
+    Page<MemberProjection> findByNativeProjection(Pageable pageable);
 }
